@@ -6,22 +6,27 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// Body Parser Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-// MongoDB Cloud Connection
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Cloud 100% Succesfully Connected!'))
   .catch((err) => console.error('MongoDB Connection Error:', err));
 
-// Auth Routes Integrations
+// Register Auth Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+const odooRoutes = require('./routes/odoo');
+app.use('/api/odoo', odooRoutes);
 
-// Route Test Gochuuf
+// Base Route Test
 app.get('/', (req, res) => {
   res.send('Odoo Live Backend Server & MongoDB Hojjechaa Jira!');
 });
